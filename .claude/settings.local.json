@@ -3,7 +3,9 @@
     "allow": [
       "Bash(git -C /Users/emmanuel/Documents/Claude/Projects/SpectrumUI rev-parse --is-inside-work-tree)",
       "Bash(bash *)",
-      "Bash(git -C /Users/emmanuel/Documents/Claude/Projects/SpectrumUI status --short)"
+      "Bash(git -C /Users/emmanuel/Documents/Claude/Projects/SpectrumUI status --short)",
+      "Bash(git -C /Users/emmanuel/Documents/Claude/Projects/SpectrumUI log --oneline -3)",
+      "Bash(git -C /Users/emmanuel/Documents/Claude/Projects/SpectrumUI branch --show-current)"
     ]
   }
 }
