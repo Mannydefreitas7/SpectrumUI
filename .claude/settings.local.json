@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(git -C /Users/emmanuel/Documents/Claude/Projects/SpectrumUI rev-parse --is-inside-work-tree)",
-      "Bash(bash *)",
-      "Bash(git -C /Users/emmanuel/Documents/Claude/Projects/SpectrumUI status --short)"
-    ]
-  }
-}
