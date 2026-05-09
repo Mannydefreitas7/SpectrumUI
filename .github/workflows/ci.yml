@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    name: build-and-test (${{ matrix.platform }})
+    runs-on: macos-14
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macOS, iOS]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+
+      - name: Show toolchain versions
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Run tests on macOS
+        if: matrix.platform == 'macOS'
+        run: swift test --parallel
+
+      - name: Run tests on iOS Simulator
+        if: matrix.platform == 'iOS'
+        run: |
+          xcodebuild test \
+            -scheme SpectrumUI-Package \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5' \
+            -quiet

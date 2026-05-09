@@ -33,9 +33,9 @@ independently testable increment. The four user stories from `spec.md` map to ph
 
 **Purpose**: Create the empty repository scaffolding every subsequent task assumes.
 
-- [ ] T001 Create the source/test/CI directory tree per the project structure in `plan.md`: `Sources/SpectrumUIFoundations/`, `Sources/SpectrumUIIcons/`, `Sources/SpectrumUIAtoms/`, `Sources/SpectrumUIMolecules/`, `Sources/SpectrumUI/`, the matching `Tests/<Name>Tests/` siblings, and `.github/workflows/`. Use `mkdir -p`; do not commit empty dirs (placeholder files come in later tasks).
-- [ ] T002 [P] Create `.gitignore` at repo root with Swift Package Manager defaults: `.build/`, `.swiftpm/`, `Package.resolved` (debatable — keep for libraries), `*.xcodeproj/`, `DerivedData/`, `.DS_Store`, `xcuserdata/`. Reference: standard SwiftPM library `.gitignore`.
-- [ ] T003 [P] Create the initial `Package.swift` at repo root with only the `// swift-tools-version: 5.9` header line, the `import PackageDescription` line, and a single empty `Package(name: "SpectrumUI")` declaration. The package will not yet build successfully; subsequent tasks fill it in.
+- [X] T001 Create the source/test/CI directory tree per the project structure in `plan.md`: `Sources/SpectrumUIFoundations/`, `Sources/SpectrumUIIcons/`, `Sources/SpectrumUIAtoms/`, `Sources/SpectrumUIMolecules/`, `Sources/SpectrumUI/`, the matching `Tests/<Name>Tests/` siblings, and `.github/workflows/`. Use `mkdir -p`; do not commit empty dirs (placeholder files come in later tasks).
+- [X] T002 [P] Create `.gitignore` at repo root with Swift Package Manager defaults: `.build/`, `.swiftpm/`, `Package.resolved` (debatable — keep for libraries), `*.xcodeproj/`, `DerivedData/`, `.DS_Store`, `xcuserdata/`. Reference: standard SwiftPM library `.gitignore`.
+- [X] T003 [P] Create the initial `Package.swift` at repo root with only the `// swift-tools-version: 5.9` header line, the `import PackageDescription` line, and a single empty `Package(name: "SpectrumUI")` declaration. The package will not yet build successfully; subsequent tasks fill it in.
 
 ---
 
@@ -47,7 +47,7 @@ independently testable increment. The four user stories from `spec.md` map to ph
 the manifest's platform and version baseline so later edits only add products/targets
 without revisiting these.
 
-- [ ] T004 Update `Package.swift` to declare `platforms: [.macOS(.v14), .iOS(.v17)]` and add empty `products: []` and `targets: []` arrays inside the `Package(...)` initializer. The package now resolves without errors and reports zero products via `swift package describe`.
+- [X] T004 Update `Package.swift` to declare `platforms: [.macOS(.v14), .iOS(.v17)]` and add empty `products: []` and `targets: []` arrays inside the `Package(...)` initializer. The package now resolves without errors and reports zero products via `swift package describe`.
 
 **Checkpoint**: Foundation ready — user-story implementation can begin.
 
@@ -66,16 +66,16 @@ FR-010, FR-015. Research R-001, R-005, R-007.
 
 ### Implementation for User Story 1
 
-- [ ] T005 [P] [US1] Create `Sources/SpectrumUIFoundations/SpectrumUIFoundations.swift` with a `public enum SpectrumUIFoundations` namespace, a `public static let moduleName = "SpectrumUIFoundations"`, and a DocC `///` doc comment describing the layer's role (tokens, theme primitives, shared utilities; zero deps). Pattern per research R-007.
-- [ ] T006 [P] [US1] Create `Sources/SpectrumUIIcons/SpectrumUIIcons.swift` with a `public enum SpectrumUIIcons` namespace, `public static let moduleName = "SpectrumUIIcons"`, and a DocC `///` doc comment describing its role (icon assets, SF Symbol bridging; depends on Foundations).
-- [ ] T007 [P] [US1] Create `Sources/SpectrumUIAtoms/SpectrumUIAtoms.swift` with a `public enum SpectrumUIAtoms` namespace, `public static let moduleName = "SpectrumUIAtoms"`, and a DocC `///` doc comment describing its role (primitive components; depends on Foundations).
-- [ ] T008 [P] [US1] Create `Sources/SpectrumUIMolecules/SpectrumUIMolecules.swift` with a `public enum SpectrumUIMolecules` namespace, `public static let moduleName = "SpectrumUIMolecules"`, and a DocC `///` doc comment describing its role (composed components; depends on Foundations + Icons + Atoms).
-- [ ] T009 [P] [US1] Create `Tests/SpectrumUIFoundationsTests/SpectrumUIFoundationsTests.swift` containing one `XCTestCase` subclass with a `func testProductIsImportable()` that asserts `XCTAssertEqual(SpectrumUIFoundations.moduleName, "SpectrumUIFoundations")`. Pattern per research R-005.
-- [ ] T010 [P] [US1] Create `Tests/SpectrumUIIconsTests/SpectrumUIIconsTests.swift` analogous to T009, asserting `SpectrumUIIcons.moduleName == "SpectrumUIIcons"`.
-- [ ] T011 [P] [US1] Create `Tests/SpectrumUIAtomsTests/SpectrumUIAtomsTests.swift` analogous to T009, asserting `SpectrumUIAtoms.moduleName == "SpectrumUIAtoms"`.
-- [ ] T012 [P] [US1] Create `Tests/SpectrumUIMoleculesTests/SpectrumUIMoleculesTests.swift` analogous to T009, asserting `SpectrumUIMolecules.moduleName == "SpectrumUIMolecules"`.
-- [ ] T013 [US1] Update `Package.swift` to declare four library products and their backing targets — `SpectrumUIFoundations`, `SpectrumUIIcons`, `SpectrumUIAtoms`, `SpectrumUIMolecules` — plus four test targets. Wire the **upward-only** dependency graph exactly per `data-model.md`: Foundations target has zero internal deps; Icons depends on `SpectrumUIFoundations`; Atoms depends on `SpectrumUIFoundations`; Molecules depends on `SpectrumUIFoundations`, `SpectrumUIIcons`, `SpectrumUIAtoms`. Each test target depends only on its paired library target. Depends on T005–T012.
-- [ ] T014 [US1] From repo root, run `swift test` and verify: package resolves, builds, and reports four passing test targets (one assertion each). Resolve any failure before proceeding. This validates SC-001, SC-002, SC-003, and the upward-only graph (SC-006: try inserting `import SpectrumUIAtoms` into the Foundations stub, observe build failure, then revert).
+- [X] T005 [P] [US1] Create `Sources/SpectrumUIFoundations/SpectrumUIFoundations.swift` with a `public enum SpectrumUIFoundations` namespace, a `public static let moduleName = "SpectrumUIFoundations"`, and a DocC `///` doc comment describing the layer's role (tokens, theme primitives, shared utilities; zero deps). Pattern per research R-007.
+- [X] T006 [P] [US1] Create `Sources/SpectrumUIIcons/SpectrumUIIcons.swift` with a `public enum SpectrumUIIcons` namespace, `public static let moduleName = "SpectrumUIIcons"`, and a DocC `///` doc comment describing its role (icon assets, SF Symbol bridging; depends on Foundations).
+- [X] T007 [P] [US1] Create `Sources/SpectrumUIAtoms/SpectrumUIAtoms.swift` with a `public enum SpectrumUIAtoms` namespace, `public static let moduleName = "SpectrumUIAtoms"`, and a DocC `///` doc comment describing its role (primitive components; depends on Foundations).
+- [X] T008 [P] [US1] Create `Sources/SpectrumUIMolecules/SpectrumUIMolecules.swift` with a `public enum SpectrumUIMolecules` namespace, `public static let moduleName = "SpectrumUIMolecules"`, and a DocC `///` doc comment describing its role (composed components; depends on Foundations + Icons + Atoms).
+- [X] T009 [P] [US1] Create `Tests/SpectrumUIFoundationsTests/SpectrumUIFoundationsTests.swift` containing one `XCTestCase` subclass with a `func testProductIsImportable()` that asserts `XCTAssertEqual(SpectrumUIFoundations.moduleName, "SpectrumUIFoundations")`. Pattern per research R-005.
+- [X] T010 [P] [US1] Create `Tests/SpectrumUIIconsTests/SpectrumUIIconsTests.swift` analogous to T009, asserting `SpectrumUIIcons.moduleName == "SpectrumUIIcons"`.
+- [X] T011 [P] [US1] Create `Tests/SpectrumUIAtomsTests/SpectrumUIAtomsTests.swift` analogous to T009, asserting `SpectrumUIAtoms.moduleName == "SpectrumUIAtoms"`.
+- [X] T012 [P] [US1] Create `Tests/SpectrumUIMoleculesTests/SpectrumUIMoleculesTests.swift` analogous to T009, asserting `SpectrumUIMolecules.moduleName == "SpectrumUIMolecules"`.
+- [X] T013 [US1] Update `Package.swift` to declare four library products and their backing targets — `SpectrumUIFoundations`, `SpectrumUIIcons`, `SpectrumUIAtoms`, `SpectrumUIMolecules` — plus four test targets. Wire the **upward-only** dependency graph exactly per `data-model.md`: Foundations target has zero internal deps; Icons depends on `SpectrumUIFoundations`; Atoms depends on `SpectrumUIFoundations`; Molecules depends on `SpectrumUIFoundations`, `SpectrumUIIcons`, `SpectrumUIAtoms`. Each test target depends only on its paired library target. Depends on T005–T012.
+- [X] T014 [US1] From repo root, run `swift test` and verify: package resolves, builds, and reports four passing test targets (one assertion each). Resolve any failure before proceeding. This validates SC-001, SC-002, SC-003, and the upward-only graph (SC-006: try inserting `import SpectrumUIAtoms` into the Foundations stub, observe build failure, then revert).
 
 **Checkpoint**: User Story 1 done — MVP is shippable. The package builds and tests pass
 on macOS from a fresh clone with no manual setup.
@@ -95,10 +95,10 @@ nothing else) builds with only Foundations symbols available; a consumer dependi
 
 ### Implementation for User Story 2
 
-- [ ] T015 [P] [US2] Create `Sources/SpectrumUI/SpectrumUI.swift` containing only `@_exported import SpectrumUIFoundations`, `@_exported import SpectrumUIIcons`, `@_exported import SpectrumUIAtoms`, `@_exported import SpectrumUIMolecules`, plus a DocC `///` doc comment explaining the umbrella role and a brief note about the underscored attribute (per research R-002 caveat).
-- [ ] T016 [P] [US2] Create `Tests/SpectrumUITests/SpectrumUITests.swift` with a single `XCTestCase` that imports `SpectrumUI` and asserts each atomic product's `moduleName` is reachable through the umbrella (four `XCTAssertEqual` calls — one per atomic product).
-- [ ] T017 [US2] Update `Package.swift` to add the umbrella library product `SpectrumUI`, its source target depending on all four atomic targets, and the matching `SpectrumUITests` test target depending only on `SpectrumUI`. Depends on T015, T016, T013.
-- [ ] T018 [US2] Run `swift test` and verify five test targets now pass. Verify selective import by adding a temporary throwaway target depending on only `SpectrumUIFoundations` and confirming `swift build` produces a binary that does not link the other atomic modules (use `swift build -v` and inspect the link command). Revert the throwaway target before committing.
+- [X] T015 [P] [US2] Create `Sources/SpectrumUI/SpectrumUI.swift` containing only `@_exported import SpectrumUIFoundations`, `@_exported import SpectrumUIIcons`, `@_exported import SpectrumUIAtoms`, `@_exported import SpectrumUIMolecules`, plus a DocC `///` doc comment explaining the umbrella role and a brief note about the underscored attribute (per research R-002 caveat).
+- [X] T016 [P] [US2] Create `Tests/SpectrumUITests/SpectrumUITests.swift` with a single `XCTestCase` that imports `SpectrumUI` and asserts each atomic product's `moduleName` is reachable through the umbrella (four `XCTAssertEqual` calls — one per atomic product).
+- [X] T017 [US2] Update `Package.swift` to add the umbrella library product `SpectrumUI`, its source target depending on all four atomic targets, and the matching `SpectrumUITests` test target depending only on `SpectrumUI`. Depends on T015, T016, T013.
+- [X] T018 [US2] Run `swift test` and verify five test targets now pass. Verify selective import by adding a temporary throwaway target depending on only `SpectrumUIFoundations` and confirming `swift build` produces a binary that does not link the other atomic modules (use `swift build -v` and inspect the link command). Revert the throwaway target before committing.
 
 **Checkpoint**: User Story 2 done — selective and umbrella consumption paths both work.
 
@@ -117,7 +117,7 @@ button is blocked.
 
 ### Implementation for User Story 3
 
-- [ ] T019 [US3] Create `.github/workflows/ci.yml` with: triggers `push` and `pull_request`; one job named `build-and-test` running on `macos-14`; matrix `platform: [macOS, iOS]`; steps for checkout, Xcode select (pin to a specific version per R-003 — e.g., `15.4`), and a conditional run step — `swift test` for `platform == macOS`, `xcodebuild test -scheme SpectrumUI-Package -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5'` for `platform == iOS`.
+- [X] T019 [US3] Create `.github/workflows/ci.yml` with: triggers `push` and `pull_request`; one job named `build-and-test` running on `macos-14`; matrix `platform: [macOS, iOS]`; steps for checkout, Xcode select (pin to a specific version per R-003 — e.g., `15.4`), and a conditional run step — `swift test` for `platform == macOS`, `xcodebuild test -scheme SpectrumUI-Package -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5'` for `platform == iOS`.
 - [ ] T020 [US3] Push the branch to GitHub and confirm both matrix jobs run, build, and pass. If the repo has no remote yet, create one (out of scope for this task list — handled by `/speckit-git-remote` or repo-admin setup); document the commit SHA at which CI was first green in the PR description.
 - [ ] T021 [US3] In GitHub repo settings, configure branch protection on the default branch (`main`) to require both `build-and-test (macOS)` and `build-and-test (iOS)` status checks before merge. This is a repo-admin task and is performed in the GitHub UI (or via `gh api` from a maintainer's local CLI); no file changes in the repo.
 
@@ -139,13 +139,13 @@ go in?" (Expected answer: Molecules.)
 
 ### Implementation for User Story 4
 
-- [ ] T022 [P] [US4] Create `Sources/SpectrumUIFoundations/Documentation.docc/Documentation.md` containing a single Markdown line — a top-level heading referencing the module: `` # ``SpectrumUIFoundations`` `` — plus a one-paragraph stub describing the layer. Per research R-004.
-- [ ] T023 [P] [US4] Create `Sources/SpectrumUIIcons/Documentation.docc/Documentation.md` analogous to T022.
-- [ ] T024 [P] [US4] Create `Sources/SpectrumUIAtoms/Documentation.docc/Documentation.md` analogous to T022.
-- [ ] T025 [P] [US4] Create `Sources/SpectrumUIMolecules/Documentation.docc/Documentation.md` analogous to T022.
-- [ ] T026 [P] [US4] Create `Sources/SpectrumUI/Documentation.docc/Documentation.md` describing the umbrella product and listing the four atomic products it re-exports.
-- [ ] T027 [US4] Create `README.md` at repository root with these sections, in this order: (1) **Supported platforms** — macOS 14+, iOS 17+; (2) **Products** — the five products with their atomic-design role and a one-sentence description; (3) **Layering rules** — the upward-only edge table from `data-model.md` plus a forbidden-direction example (e.g., "❌ Foundations may not import Atoms"); (4) **Quickstart** — clone + `swift test`; (5) **Constitution** — link to `.specify/memory/constitution.md` with a one-sentence framing of what it governs.
-- [ ] T028 [US4] Run `swift package generate-documentation` from repo root and verify it completes with zero warnings. If DocC build is unavailable in the local toolchain, document the verification command in the PR description and mark this verified by a CI job in a follow-up.
+- [X] T022 [P] [US4] Create `Sources/SpectrumUIFoundations/Documentation.docc/Documentation.md` containing a single Markdown line — a top-level heading referencing the module: `` # ``SpectrumUIFoundations`` `` — plus a one-paragraph stub describing the layer. Per research R-004.
+- [X] T023 [P] [US4] Create `Sources/SpectrumUIIcons/Documentation.docc/Documentation.md` analogous to T022.
+- [X] T024 [P] [US4] Create `Sources/SpectrumUIAtoms/Documentation.docc/Documentation.md` analogous to T022.
+- [X] T025 [P] [US4] Create `Sources/SpectrumUIMolecules/Documentation.docc/Documentation.md` analogous to T022.
+- [X] T026 [P] [US4] Create `Sources/SpectrumUI/Documentation.docc/Documentation.md` describing the umbrella product and listing the four atomic products it re-exports.
+- [X] T027 [US4] Create `README.md` at repository root with these sections, in this order: (1) **Supported platforms** — macOS 14+, iOS 17+; (2) **Products** — the five products with their atomic-design role and a one-sentence description; (3) **Layering rules** — the upward-only edge table from `data-model.md` plus a forbidden-direction example (e.g., "❌ Foundations may not import Atoms"); (4) **Quickstart** — clone + `swift test`; (5) **Constitution** — link to `.specify/memory/constitution.md` with a one-sentence framing of what it governs.
+- [X] T028 [US4] Run `swift package generate-documentation` from repo root and verify it completes with zero warnings. If DocC build is unavailable in the local toolchain, document the verification command in the PR description and mark this verified by a CI job in a follow-up.
 
 **Checkpoint**: User Story 4 done — the project is self-explanatory to new contributors.
 
@@ -155,8 +155,8 @@ go in?" (Expected answer: Molecules.)
 
 **Purpose**: Final validation across all stories and ceremonial closeout.
 
-- [ ] T029 [P] Walk through `quickstart.md` end-to-end on a freshly cloned copy of the branch (separate clone in `/tmp` or similar). Each command MUST run as documented; capture any drift between docs and reality and update `quickstart.md` accordingly.
-- [ ] T030 [P] Re-validate `spec.md` Functional Requirements (FR-001 through FR-015) and Success Criteria (SC-001 through SC-007) item by item. Mark each as ✅ Verified or ❌ Outstanding in a brief PR-description checklist.
+- [X] T029 [P] Walk through `quickstart.md` end-to-end on a freshly cloned copy of the branch (separate clone in `/tmp` or similar). Each command MUST run as documented; capture any drift between docs and reality and update `quickstart.md` accordingly.
+- [X] T030 [P] Re-validate `spec.md` Functional Requirements (FR-001 through FR-015) and Success Criteria (SC-001 through SC-007) item by item. Mark each as ✅ Verified or ❌ Outstanding in a brief PR-description checklist.
 - [ ] T031 Tag the merge commit `v0.1.0` per research R-006. This is a release-ceremony task and runs after the PR merges to `main`; it does not block the PR itself.
 
 ---
