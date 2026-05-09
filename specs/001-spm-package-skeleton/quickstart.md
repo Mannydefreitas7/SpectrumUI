@@ -30,10 +30,12 @@ To run the iOS-side check locally (mirrors the CI iOS job):
 ```bash
 xcodebuild test \
   -scheme SpectrumUI-Package \
-  -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5'
+  -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest'
 ```
 
-(`SpectrumUI-Package` is the auto-generated scheme SPM creates for the root package.)
+(`SpectrumUI-Package` is the auto-generated scheme SPM creates for the root package.
+`OS=latest` picks the newest installed iOS Simulator runtime — substitute a specific
+version like `OS=17.5` if you want to pin.)
 
 ## Open in Xcode
 

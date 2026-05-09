@@ -1,5 +1,5 @@
 import XCTest
-@testable import SpectrumUIIcons
+import SpectrumUIIcons
 
 final class SpectrumUIIconsTests: XCTestCase {
     func testProductIsImportable() {

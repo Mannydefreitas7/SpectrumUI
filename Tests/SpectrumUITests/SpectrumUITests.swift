@@ -1,5 +1,5 @@
 import XCTest
-@testable import SpectrumUI
+import SpectrumUI
 
 final class SpectrumUITests: XCTestCase {
     func testUmbrellaReExportsEveryAtomicProduct() {

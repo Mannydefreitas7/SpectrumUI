@@ -1,5 +1,5 @@
 import XCTest
-@testable import SpectrumUIFoundations
+import SpectrumUIFoundations
 
 final class SpectrumUIFoundationsTests: XCTestCase {
     func testProductIsImportable() {

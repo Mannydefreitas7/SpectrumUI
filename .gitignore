@@ -2,6 +2,9 @@
 .build/
 .swiftpm/
 Packages/
+
+# Package.resolved is intentionally ignored: SpectrumUI is a library, so consumers
+# resolve their own dependency versions. (Apps would commit this file instead.)
 Package.resolved
 
 # Xcode

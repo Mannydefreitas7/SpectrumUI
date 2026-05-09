@@ -84,7 +84,7 @@ For the iOS-side check (mirrors CI):
 ```bash
 xcodebuild test \
   -scheme SpectrumUI-Package \
-  -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5'
+  -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest'
 ```
 
 ## Constitution
@@ -93,4 +93,5 @@ This project is governed by a constitution: see [`.specify/memory/constitution.m
 
 ## License
 
-TBD.
+Apache License 2.0. See [LICENSE](LICENSE). This matches Adobe Spectrum's own licensing and includes a patent grant.
+

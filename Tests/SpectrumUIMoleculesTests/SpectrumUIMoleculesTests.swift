@@ -1,5 +1,5 @@
 import XCTest
-@testable import SpectrumUIMolecules
+import SpectrumUIMolecules
 
 final class SpectrumUIMoleculesTests: XCTestCase {
     func testProductIsImportable() {

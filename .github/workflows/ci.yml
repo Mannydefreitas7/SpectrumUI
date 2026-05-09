@@ -9,7 +9,7 @@ on:
 jobs:
   build-and-test:
     name: build-and-test (${{ matrix.platform }})
-    runs-on: macos-14
+    runs-on: macos-latest
     strategy:
       fail-fast: false
       matrix:
@@ -17,9 +17,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_15.4.app
 
       - name: Show toolchain versions
         run: |
@@ -30,10 +27,20 @@ jobs:
         if: matrix.platform == 'macOS'
         run: swift test --parallel
 
+      - name: Pick latest iOS simulator
+        if: matrix.platform == 'iOS'
+        id: pick-sim
+        run: |
+          # Find the newest iOS runtime available on the runner.
+          RUNTIME=$(xcrun simctl list runtimes -j \
+            | python3 -c "import json,sys; r=json.load(sys.stdin)['runtimes']; ios=[x for x in r if x['platform']=='iOS' and x['isAvailable']]; ios.sort(key=lambda x: tuple(int(p) for p in x['version'].split('.'))); print(ios[-1]['version'])")
+          echo "version=$RUNTIME" >> "$GITHUB_OUTPUT"
+          echo "Selected iOS Simulator runtime: $RUNTIME"
+
       - name: Run tests on iOS Simulator
         if: matrix.platform == 'iOS'
         run: |
           xcodebuild test \
             -scheme SpectrumUI-Package \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5' \
+            -destination "platform=iOS Simulator,name=iPhone 15,OS=${{ steps.pick-sim.outputs.version }}" \
             -quiet
