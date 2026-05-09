@@ -118,8 +118,8 @@ button is blocked.
 ### Implementation for User Story 3
 
 - [X] T019 [US3] Create `.github/workflows/ci.yml` with: triggers `push` and `pull_request`; one job named `build-and-test` running on `macos-14`; matrix `platform: [macOS, iOS]`; steps for checkout, Xcode select (pin to a specific version per R-003 — e.g., `15.4`), and a conditional run step — `swift test` for `platform == macOS`, `xcodebuild test -scheme SpectrumUI-Package -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5'` for `platform == iOS`.
-- [ ] T020 [US3] Push the branch to GitHub and confirm both matrix jobs run, build, and pass. If the repo has no remote yet, create one (out of scope for this task list — handled by `/speckit-git-remote` or repo-admin setup); document the commit SHA at which CI was first green in the PR description.
-- [ ] T021 [US3] In GitHub repo settings, configure branch protection on the default branch (`main`) to require both `build-and-test (macOS)` and `build-and-test (iOS)` status checks before merge. This is a repo-admin task and is performed in the GitHub UI (or via `gh api` from a maintainer's local CLI); no file changes in the repo.
+- [X] T020 [US3] Push the branch to GitHub and confirm both matrix jobs run, build, and pass. If the repo has no remote yet, create one (out of scope for this task list — handled by `/speckit-git-remote` or repo-admin setup); document the commit SHA at which CI was first green in the PR description.
+- [X] T021 [US3] In GitHub repo settings, configure branch protection on the default branch (`main`) to require both `build-and-test (macOS)` and `build-and-test (iOS)` status checks before merge. This is a repo-admin task and is performed in the GitHub UI (or via `gh api` from a maintainer's local CLI); no file changes in the repo.
 
 **Checkpoint**: User Story 3 done — parity is enforced by CI for every change.
 
