@@ -12,7 +12,15 @@ let package = Package(
         .library(name: "SpectrumUIIcons", targets: ["SpectrumUIIcons"]),
         .library(name: "SpectrumUIAtoms", targets: ["SpectrumUIAtoms"]),
         .library(name: "SpectrumUIMolecules", targets: ["SpectrumUIMolecules"]),
-        .library(name: "SpectrumUI", targets: ["SpectrumUI"])
+        .library(name: "SpectrumUI", targets: ["SpectrumUI"]),
+        .plugin(name: "GenerateTokens", targets: ["GenerateTokens"])
+    ],
+    dependencies: [
+        // Test-only: snapshot testing for token rendering.
+        .package(
+            url: "https://github.com/pointfreeco/swift-snapshot-testing.git",
+            from: "1.15.0"
+        )
     ],
     targets: [
         // MARK: Foundations — bottom of the stack; zero internal dependencies.
@@ -22,7 +30,10 @@ let package = Package(
         ),
         .testTarget(
             name: "SpectrumUIFoundationsTests",
-            dependencies: ["SpectrumUIFoundations"]
+            dependencies: [
+                "SpectrumUIFoundations",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ]
         ),
 
         // MARK: Icons — depends only on Foundations.
@@ -72,6 +83,23 @@ let package = Package(
         .testTarget(
             name: "SpectrumUITests",
             dependencies: ["SpectrumUI"]
+        ),
+
+        // MARK: GenerateTokens — SPM command plugin.
+        // Reads Tools/SpectrumTokensSnapshot/*.json and emits Swift source files
+        // into Sources/SpectrumUIFoundations/Tokens/. Run via:
+        //   swift package generate-tokens
+        .plugin(
+            name: "GenerateTokens",
+            capability: .command(
+                intent: .custom(
+                    verb: "generate-tokens",
+                    description: "Regenerate SpectrumUIFoundations token sources from the checked-in Adobe Spectrum JSON snapshot."
+                ),
+                permissions: [
+                    .writeToPackageDirectory(reason: "Writes generated token sources into Sources/SpectrumUIFoundations/Tokens/.")
+                ]
+            )
         )
     ]
 )
