@@ -27,20 +27,42 @@ jobs:
         if: matrix.platform == 'macOS'
         run: swift test --parallel
 
-      - name: Pick latest iOS simulator
+      - name: Pick an available iOS simulator
         if: matrix.platform == 'iOS'
         id: pick-sim
         run: |
-          # Find the newest iOS runtime available on the runner.
-          RUNTIME=$(xcrun simctl list runtimes -j \
-            | python3 -c "import json,sys; r=json.load(sys.stdin)['runtimes']; ios=[x for x in r if x['platform']=='iOS' and x['isAvailable']]; ios.sort(key=lambda x: tuple(int(p) for p in x['version'].split('.'))); print(ios[-1]['version'])")
-          echo "version=$RUNTIME" >> "$GITHUB_OUTPUT"
-          echo "Selected iOS Simulator runtime: $RUNTIME"
+          # Find the newest available iOS runtime, then the first booted-or-shutdown
+          # iPhone device that runs on it. Avoids brittle name/OS hardcoding because
+          # runner images rotate device + runtime catalogs.
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, subprocess
+          devices = json.loads(subprocess.check_output(
+              ["xcrun", "simctl", "list", "devices", "--json"]))["devices"]
+          # Keys look like "com.apple.CoreSimulator.SimRuntime.iOS-18-6"
+          ios_keys = sorted(
+              (k for k in devices if "SimRuntime.iOS-" in k),
+              key=lambda k: tuple(int(p) for p in k.split("iOS-")[-1].split("-")),
+          )
+          if not ios_keys:
+              raise SystemExit("No iOS simulator runtimes installed on the runner.")
+          newest = ios_keys[-1]
+          os_ver = newest.split("iOS-")[-1].replace("-", ".")
+          iphone = next(
+              (d for d in devices[newest]
+               if d.get("isAvailable") and d.get("name", "").startswith("iPhone")),
+              None,
+          )
+          if iphone is None:
+              raise SystemExit(f"No available iPhone device on runtime {newest}.")
+          print(f"name={iphone['name']}")
+          print(f"os={os_ver}")
+          PY
 
       - name: Run tests on iOS Simulator
         if: matrix.platform == 'iOS'
         run: |
+          echo "Destination: name=${{ steps.pick-sim.outputs.name }}, OS=${{ steps.pick-sim.outputs.os }}"
           xcodebuild test \
             -scheme SpectrumUI-Package \
-            -destination "platform=iOS Simulator,name=iPhone 15,OS=${{ steps.pick-sim.outputs.version }}" \
+            -destination "platform=iOS Simulator,name=${{ steps.pick-sim.outputs.name }},OS=${{ steps.pick-sim.outputs.os }}" \
             -quiet
