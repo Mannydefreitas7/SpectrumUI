@@ -144,7 +144,7 @@ Plan research R-001, R-008.
 
 ### Implementation for User Story 3
 
-- [ ] T028 [US3] Document the snapshot-refresh ceremony in `Tools/SpectrumTokensSnapshot/README.md`: how to pick a new upstream commit SHA, replace the JSON, re-run the generator, and verify all three checks pass.
+- [X] T028 [US3] Document the snapshot-refresh ceremony in `Tools/SpectrumTokensSnapshot/README.md`: how to pick a new upstream commit SHA, replace the JSON, re-run the generator, and verify all three checks pass.
 
 **Checkpoint**: User Story 3 complete. The generator is reproducible and the token
 catalog is fully traceable to upstream.
@@ -163,8 +163,8 @@ introduce a typo, observe compile error; hover a token reference, observe DocC t
 
 ### Implementation for User Story 4
 
-- [ ] T029 [US4] Verify that the generator (T010) emits per-token DocC `///` comments including a one-line description AND the JSON source path. Inspect a sample of generated tokens to confirm. If gaps, update T010's emitter.
-- [ ] T030 [US4] Update `Sources/SpectrumUIFoundations/Documentation.docc/Documentation.md` with: (a) a "Token reference" article that links into the eight category namespaces, (b) a "Themes" article with a custom-theme example, (c) a "Reduce motion & Dynamic Type" article documenting accessibility behavior. Run `xcodebuild docbuild -scheme SpectrumUIFoundations` and ensure zero new warnings.
+- [X] T029 [US4] Verify that the generator (T010) emits per-token DocC `///` comments including a one-line description AND the JSON source path. Inspect a sample of generated tokens to confirm. If gaps, update T010's emitter.
+- [X] T030 [US4] Update `Sources/SpectrumUIFoundations/Documentation.docc/Documentation.md` with: (a) a "Token reference" article that links into the eight category namespaces, (b) a "Themes" article with a custom-theme example, (c) a "Reduce motion & Dynamic Type" article documenting accessibility behavior. Run `xcodebuild docbuild -scheme SpectrumUIFoundations` and ensure zero new warnings.
 
 **Checkpoint**: User Story 4 complete. The library is pleasant to discover and use.
 
@@ -174,9 +174,9 @@ introduce a typo, observe compile error; hover a token reference, observe DocC t
 
 **Purpose**: Final verification + documentation + release-readiness.
 
-- [ ] T031 [P] Walk through `quickstart.md` end-to-end on a fresh clone: clone, `swift test`, regenerate, build a sample consumer app touching all eight categories, toggle light/dark in Xcode preview. Capture any drift between docs and reality and update `quickstart.md`.
-- [ ] T032 [P] Re-validate `spec.md` Functional Requirements (FR-001..FR-018) and Success Criteria (SC-001..SC-008). Mark each in the PR description as ✅ Verified or ❌ Outstanding.
-- [ ] T033 Update top-level `README.md`: bump the supported version reference from `0.1.0` to `0.2.0`; add a short "Tokens" section under Products that points at the Foundations DocC; mention the regenerate command in the Quickstart.
+- [X] T031 [P] Walk through `quickstart.md` end-to-end on a fresh clone: clone, `swift test`, regenerate, build a sample consumer app touching all eight categories, toggle light/dark in Xcode preview. Capture any drift between docs and reality and update `quickstart.md`.
+- [X] T032 [P] Re-validate `spec.md` Functional Requirements (FR-001..FR-018) and Success Criteria (SC-001..SC-008). Mark each in the PR description as ✅ Verified or ❌ Outstanding.
+- [X] T033 Update top-level `README.md`: bump the supported version reference from `0.1.0` to `0.2.0`; add a short "Tokens" section under Products that points at the Foundations DocC; mention the regenerate command in the Quickstart.
 - [ ] T034 Tag `v0.2.0` after PR merge per constitution versioning rules. Release ceremony only — does not block PR.
 
 ---

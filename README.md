@@ -2,7 +2,7 @@
 
 A SwiftUI port of the [Adobe Spectrum Design System](https://spectrum.adobe.com/) — tokens, foundations, and components — for macOS and iOS.
 
-> **Status**: Skeleton. The package builds and tests green, but ships only marker namespaces. Tokens, icons, atoms, and molecules will land in subsequent releases.
+> **Status (v0.2.0)**: Foundations token system landed. Atoms, molecules, and icons still ship as marker namespaces; their real APIs come in subsequent releases.
 
 ## Supported Platforms
 
@@ -19,7 +19,7 @@ SpectrumUI follows atomic-design layering. Each layer is published as a standalo
 
 | Product | Atomic role | Description |
 |---------|-------------|-------------|
-| `SpectrumUIFoundations` | Foundations | Design tokens (color, spacing, typography, motion, elevation, radius), theme primitives, shared utilities. |
+| `SpectrumUIFoundations` | Foundations | Design tokens (color, spacing, typography, motion, elevation, radius, opacity, sizing), theme primitives, SwiftUI Environment integration. **Real API as of v0.2.0** — see [Foundations quickstart](#foundations-token-quickstart) below. |
 | `SpectrumUIIcons` | Icons | Spectrum's icon set + SF Symbol bridging. |
 | `SpectrumUIAtoms` | Atoms | Primitive components (Button, Checkbox, TextField, Badge, …). |
 | `SpectrumUIMolecules` | Molecules | Composed components (SearchField, Card, Toast, …). |
@@ -41,6 +41,58 @@ Dependencies between SpectrumUI products flow **upward only**. A higher layer ma
 
 When adding a new component, choose the lowest layer that can express it without violating the rule. (Hint: a `SearchField` is a *composition* — it belongs in `Molecules`. A `Button` is a primitive — it belongs in `Atoms`.)
 
+## Foundations Token Quickstart
+
+After v0.2.0, `SpectrumUIFoundations` exposes a real token system:
+
+```swift
+import SwiftUI
+import SpectrumUIFoundations
+
+struct CardView: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spectrum.spacing.s200) {
+            Text("Hello, Spectrum")
+                .spectrumFont(Spectrum.typography.headingM)
+                .foregroundStyle(Spectrum.color.text.body)
+            Text("Adaptive to light and dark.")
+                .spectrumFont(Spectrum.typography.bodyM)
+                .foregroundStyle(Spectrum.color.text.muted)
+        }
+        .padding(Spectrum.spacing.s400)
+        .background(
+            Spectrum.color.background.layer1,
+            in: .rect(cornerRadius: Spectrum.radius.s500)
+        )
+    }
+}
+```
+
+The full Spectrum color palette — 19 families × ~16 shades — is reachable via
+`Spectrum.color.palette.<family>.s<N>`, generated from Adobe's published JSON.
+
+To customize for a brand:
+
+```swift
+let brand = Theme(
+    name: "MyBrand",
+    base: .light,
+    overrides: ThemeOverrides()
+        .colorOverride(id: "blue-500", with: SpectrumColor(
+            lightHex: 0xFF1976D2, darkHex: 0xFF42A5F5))
+)
+
+ContentView().spectrumTheme(brand)
+```
+
+For maintainers — refresh tokens from upstream Spectrum:
+
+```bash
+swift package generate-tokens --allow-writing-to-package-directory
+```
+
+(See `Tools/SpectrumTokensSnapshot/README.md` for the snapshot-refresh ceremony.)
+
 ## Quickstart
 
 ### Use SpectrumUI in your project
@@ -49,7 +101,7 @@ In your own `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Mannydefreitas7/SpectrumUI.git", from: "0.1.0")
+    .package(url: "https://github.com/Mannydefreitas7/SpectrumUI.git", from: "0.2.0")
 ],
 targets: [
     .target(
