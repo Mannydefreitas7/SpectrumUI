@@ -139,7 +139,7 @@ Plan research R-001, R-008.
 
 ### Tests for User Story 3
 
-- [ ] T026 [P] [US3] Create `Tests/SpectrumUIFoundationsTests/GeneratorIdempotencyTests.swift`: invoke the generator's emit logic in-process (refactor T010 so the parsing + emission is a callable function, with the plugin's `performCommand` a thin shell). Run twice, assert byte-identical output. (FR-003, FR-016)
+- [X] T026 [P] [US3] Create `Tests/SpectrumUIFoundationsTests/GeneratorIdempotencyTests.swift`: invoke the generator's emit logic in-process (refactor T010 so the parsing + emission is a callable function, with the plugin's `performCommand` a thin shell). Run twice, assert byte-identical output. (FR-003, FR-016)
 - [X] T027 [P] [US3] Create `Tests/SpectrumUIFoundationsTests/TraceabilityTests.swift`: parse every `Sources/SpectrumUIFoundations/Tokens/*.swift` file, extract the source-JSON-path comment from each generated token, assert each path resolves to a real key path inside `Tools/SpectrumTokensSnapshot/spectrum-tokens.json`. (FR-017)
 
 ### Implementation for User Story 3

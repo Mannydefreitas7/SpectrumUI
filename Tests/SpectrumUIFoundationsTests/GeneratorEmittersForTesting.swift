@@ -1,73 +1,37 @@
 import Foundation
-import PackagePlugin
 
-/// SPM command plugin: regenerate SpectrumUIFoundations token sources from the
-/// checked-in Adobe Spectrum JSON snapshot.
-///
-/// Run with:
-///
-/// ```bash
-/// swift package generate-tokens --allow-writing-to-package-directory
-/// ```
-///
-/// **Scope (v0.2.x):** Generates the categories Adobe ships in a generator-friendly
-/// shape — color palette (`color-palette.json`) and dimension layout tokens
-/// (`layout.json`'s `spacing-*` and `corner-radius-*`). The remaining four
-/// categories — typography, motion, elevation, opacity, and sizing — are not in
-/// `@adobe/spectrum-tokens` in a directly-renderable form (typography is atomic;
-/// motion/elevation/opacity/sizing aren't published) and remain hand-curated.
-@main
-struct GenerateTokens: CommandPlugin {
-    func performCommand(context: PluginContext, arguments: [String]) async throws {
-        let packageRoot = context.package.directory.string
-        let snapshotDir = packageRoot + "/Tools/SpectrumTokensSnapshot"
-        let outputDir   = packageRoot + "/Sources/SpectrumUIFoundations/Tokens"
+// =============================================================================
+// IN-PROCESS COPY OF THE TOKEN-GENERATOR RENDER LOGIC.
+//
+// SPM command plugins live in their own module and cannot be imported by test
+// targets, so this file mirrors the pure render functions from
+// `Plugins/GenerateTokens/GenerateTokens.swift` verbatim. Tests call
+// `emitTokenSourcesForTesting(snapshotDir:)` here to exercise the same emit
+// behavior the plugin uses.
+//
+// Drift between the two copies is caught by
+// `GeneratorIdempotencyTests.testEmitMatchesCheckedInSources`: it compares this
+// file's output against the on-disk `Tokens/*.swift` files (which the plugin
+// produced). If they diverge, one of the two sides was edited without syncing
+// the other — fix by mirroring the change here.
+//
+// KEEP THIS FILE BYTE-EQUIVALENT (modulo identifier suffixes and this header)
+// TO `Plugins/GenerateTokens/GenerateTokens.swift`.
+// =============================================================================
 
-        Diagnostics.remark("""
-        SpectrumUIFoundations token generator
-        ═════════════════════════════════════
-        Snapshot: \(snapshotDir)
-        Output:   \(outputDir)
-        """)
-
-        let outputs = try emitTokenSources(snapshotDir: snapshotDir)
-
-        for (name, content) in outputs {
-            try content.write(
-                toFile: "\(outputDir)/\(name)",
-                atomically: true,
-                encoding: .utf8
-            )
-            Diagnostics.remark("✓ \(name)  (\(content.count) bytes)")
-        }
-
-        Diagnostics.remark("""
-        Other categories (typography/motion/elevation/opacity/sizing/semantic-color)
-        remain hand-curated in this release — see headers in each file.
-        """)
-    }
-}
-
-/// Pure render seam — read JSON, return ordered (filename, content) pairs ready to
-/// write. Isolated from `PluginContext` so it can be unit-tested in-process; see
-/// `Tests/SpectrumUIFoundationsTests/GeneratorIdempotencyTests.swift`.
-///
-/// Order matters: the test compares this list against the checked-in `Tokens/*.swift`
-/// contents. Keep the output stable across runs (sorted families/scales, no
-/// timestamps, no environment-derived strings).
-func emitTokenSources(snapshotDir: String) throws -> [(name: String, content: String)] {
-    let palette = try loadJSONDict(at: "\(snapshotDir)/color-palette.json")
-    let layout  = try loadJSONDict(at: "\(snapshotDir)/layout.json")
+func emitTokenSourcesForTesting(snapshotDir: String) throws -> [(name: String, content: String)] {
+    let palette = try loadJSONDictForTesting(at: "\(snapshotDir)/color-palette.json")
+    let layout  = try loadJSONDictForTesting(at: "\(snapshotDir)/layout.json")
 
     return [
-        ("ColorPaletteTokens.swift", renderColorPalette(palette)),
-        ("SpacingTokens.swift", renderDimensionTokens(
+        ("ColorPaletteTokens.swift", renderColorPaletteForTesting(palette)),
+        ("SpacingTokens.swift", renderDimensionTokensForTesting(
             from: layout,
             prefix: "spacing-",
             structName: "SpacingTokens",
             docComment: "Spacing scale tokens (`CGFloat`, in points). Use for padding, gaps, and inset distances. Higher numbers = more space."
         )),
-        ("RadiusTokens.swift", renderDimensionTokens(
+        ("RadiusTokens.swift", renderDimensionTokensForTesting(
             from: layout,
             prefix: "corner-radius-",
             structName: "RadiusTokens",
@@ -76,35 +40,27 @@ func emitTokenSources(snapshotDir: String) throws -> [(name: String, content: St
     ]
 }
 
-func loadJSONDict(at path: String) throws -> [String: Any] {
+func loadJSONDictForTesting(at path: String) throws -> [String: Any] {
     let url = URL(fileURLWithPath: path)
     let data = try Data(contentsOf: url)
     guard let dict = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-        throw GeneratorError.malformedJSON(path)
+        throw GeneratorTestError.malformedJSON(path)
     }
     return dict
 }
 
-// MARK: - Errors
-
-enum GeneratorError: Error, CustomStringConvertible {
+enum GeneratorTestError: Error, CustomStringConvertible {
     case malformedJSON(String)
-    case unparseableValue(String, String)
-
     var description: String {
         switch self {
-        case .malformedJSON(let path):
-            return "Malformed JSON at \(path)"
-        case .unparseableValue(let token, let value):
-            return "Cannot parse value for \(token): \(value)"
+        case .malformedJSON(let p): return "Malformed JSON at \(p)"
         }
     }
 }
 
-// MARK: - rgb()/rgba() parser
+// MARK: - rgb()/rgba() parser (mirror of plugin's parseRGBHex)
 
-func parseRGBHex(_ s: String) -> UInt32? {
-    // Matches rgb(R, G, B) or rgba(R, G, B, A) where A is 0.0–1.0 or a percentage.
+func parseRGBHexForTesting(_ s: String) -> UInt32? {
     let trimmed = s.trimmingCharacters(in: .whitespaces)
     guard trimmed.hasPrefix("rgb(") || trimmed.hasPrefix("rgba(") else { return nil }
     let inside = trimmed
@@ -124,7 +80,7 @@ func parseRGBHex(_ s: String) -> UInt32? {
     return (a << 24) | (r << 16) | (g << 8) | b
 }
 
-func parsePxToCGFloat(_ s: String) -> Double? {
+func parsePxToCGFloatForTesting(_ s: String) -> Double? {
     let trimmed = s.trimmingCharacters(in: .whitespaces)
     if trimmed.hasSuffix("px"), let n = Double(trimmed.dropLast(2)) { return n }
     if let n = Double(trimmed) { return n }
@@ -133,7 +89,7 @@ func parsePxToCGFloat(_ s: String) -> Double? {
 
 // MARK: - Header banner
 
-private let generatedBanner = """
+private let generatedBannerForTesting = """
 // ============================================================================
 // GENERATED — DO NOT EDIT.
 //
@@ -146,8 +102,7 @@ private let generatedBanner = """
 
 // MARK: - Color palette emitter
 
-func renderColorPalette(_ palette: [String: Any]) -> String {
-    // Group "blue-500" → family="blue", scale=500. Skip tokens without 'sets'.
+func renderColorPaletteForTesting(_ palette: [String: Any]) -> String {
     var families: [String: [(scale: Int, light: UInt32, dark: UInt32)]] = [:]
 
     for (name, raw) in palette {
@@ -157,11 +112,10 @@ func renderColorPalette(_ palette: [String: Any]) -> String {
               let darkSet  = sets["dark"]  as? [String: Any],
               let lightVal = lightSet["value"] as? String,
               let darkVal  = darkSet["value"]  as? String,
-              let lightHex = parseRGBHex(lightVal),
-              let darkHex  = parseRGBHex(darkVal)
+              let lightHex = parseRGBHexForTesting(lightVal),
+              let darkHex  = parseRGBHexForTesting(darkVal)
         else { continue }
 
-        // Parse "<family>-<scale>" — only emit canonical numeric scales.
         guard let dash = name.lastIndex(of: "-"),
               let scale = Int(name[name.index(after: dash)...])
         else { continue }
@@ -170,7 +124,7 @@ func renderColorPalette(_ palette: [String: Any]) -> String {
         families[family, default: []].append((scale, lightHex, darkHex))
     }
 
-    var out = generatedBanner + "\n\nimport SwiftUI\n\n"
+    var out = generatedBannerForTesting + "\n\nimport SwiftUI\n\n"
 
     out += """
     /// Adobe Spectrum's full color palette. Reachable via `Spectrum.color.palette`.
@@ -216,7 +170,7 @@ func renderColorPalette(_ palette: [String: Any]) -> String {
 
 // MARK: - Dimension emitter (spacing, corner-radius)
 
-func renderDimensionTokens(
+func renderDimensionTokensForTesting(
     from layout: [String: Any],
     prefix: String,
     structName: String,
@@ -228,10 +182,9 @@ func renderDimensionTokens(
         guard name.hasPrefix(prefix),
               let token = raw as? [String: Any],
               let value = token["value"] as? String,
-              let pt = parsePxToCGFloat(value)
+              let pt = parsePxToCGFloatForTesting(value)
         else { continue }
 
-        // "spacing-100" → 100. Treat "spacing-25" as 25.
         let suffix = String(name.dropFirst(prefix.count))
         guard let scale = Int(suffix) else { continue }
         pairs.append((scale, pt, name))
@@ -239,19 +192,19 @@ func renderDimensionTokens(
 
     pairs.sort { $0.scale < $1.scale }
 
-    var out = generatedBanner + "\n\nimport SwiftUI\n\n"
+    var out = generatedBannerForTesting + "\n\nimport SwiftUI\n\n"
     out += "/// \(docComment)\n"
     out += "public struct \(structName): Sendable {\n"
     out += "    public init() {}\n\n"
     for entry in pairs {
-        out += "    /// `\(entry.name)` — `layout.json/\(entry.name)` (\(formatPt(entry.value)) pt)\n"
-        out += "    public var s\(entry.scale): CGFloat { \(formatPt(entry.value)) }\n"
+        out += "    /// `\(entry.name)` — `layout.json/\(entry.name)` (\(formatPtForTesting(entry.value)) pt)\n"
+        out += "    public var s\(entry.scale): CGFloat { \(formatPtForTesting(entry.value)) }\n"
     }
     out += "}\n"
     return out
 }
 
-private func formatPt(_ v: Double) -> String {
+private func formatPtForTesting(_ v: Double) -> String {
     if v == v.rounded() {
         return String(Int(v))
     }
