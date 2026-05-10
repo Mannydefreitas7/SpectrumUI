@@ -82,16 +82,16 @@ research R-002, R-005, R-006.
 
 ### Tests for User Story 1 (REQUIRED — FR-015)
 
-- [ ] T015 [P] [US1] Create `Tests/SpectrumUIFoundationsTests/ColorSchemeAdaptationTests.swift` with snapshot tests rendering one representative `SpectrumColor` token in both `.light` and `.dark` color schemes on the host platform. Uses `pointfreeco/swift-snapshot-testing`. First run records baselines; subsequent runs verify.
-- [ ] T016 [P] [US1] Create `Tests/SpectrumUIFoundationsTests/CategoryRenderingTests.swift` with snapshot tests rendering a representative token for each non-color category (spacing, typography, motion frame, elevation shadow, radius corner, opacity overlay, sizing) in both color schemes.
-- [ ] T017 [P] [US1] Create `Tests/SpectrumUIFoundationsTests/DynamicTypeTests.swift` asserting that `SpectrumFont.textStyle` is preserved end-to-end on iOS — apply a typography token to a `Text`, snapshot at `.large` and `.accessibility3`, verify scaling occurred.
-- [ ] T018 [P] [US1] Create `Tests/SpectrumUIFoundationsTests/ReduceMotionTests.swift` asserting that `SpectrumDuration.resolve(reduceMotion: true)` returns the reduced variant; that `View.spectrumAnimation(_:)` honors `\.accessibilityReduceMotion`.
+- [X] T015 [P] [US1] Create `Tests/SpectrumUIFoundationsTests/ColorSchemeAdaptationTests.swift` with snapshot tests rendering one representative `SpectrumColor` token in both `.light` and `.dark` color schemes on the host platform. Uses `pointfreeco/swift-snapshot-testing`. First run records baselines; subsequent runs verify.
+- [X] T016 [P] [US1] Create `Tests/SpectrumUIFoundationsTests/CategoryRenderingTests.swift` with snapshot tests rendering a representative token for each non-color category (spacing, typography, motion frame, elevation shadow, radius corner, opacity overlay, sizing) in both color schemes.
+- [X] T017 [P] [US1] Create `Tests/SpectrumUIFoundationsTests/DynamicTypeTests.swift` asserting that `SpectrumFont.textStyle` is preserved end-to-end on iOS — apply a typography token to a `Text`, snapshot at `.large` and `.accessibility3`, verify scaling occurred.
+- [X] T018 [P] [US1] Create `Tests/SpectrumUIFoundationsTests/ReduceMotionTests.swift` asserting that `SpectrumDuration.resolve(reduceMotion: true)` returns the reduced variant; that `View.spectrumAnimation(_:)` honors `\.accessibilityReduceMotion`.
 
 ### Implementation for User Story 1
 
-- [ ] T019 [US1] Wire `Spectrum.color`, `Spectrum.spacing`, …, `Spectrum.sizing` accessors in `Sources/SpectrumUIFoundations/SpectrumUIFoundations.swift` to delegate to the generated `…Tokens` types from T011. Each accessor reads `\.spectrumTheme` from a captured environment when needed.
-- [ ] T020 [US1] Verify that `Spectrum.color.<token>` resolves correctly given a theme: write a tiny view, embed in a snapshot test, confirm light value renders in `.light` env and dark value in `.dark`. Re-run T015 to confirm green.
-- [ ] T021 [US1] Run `swift test`. Expected: all five test targets plus the four new test files pass. Investigate and fix any snapshot regressions before continuing.
+- [X] T019 [US1] Wire `Spectrum.color`, `Spectrum.spacing`, …, `Spectrum.sizing` accessors in `Sources/SpectrumUIFoundations/SpectrumUIFoundations.swift` to delegate to the generated `…Tokens` types from T011. Each accessor reads `\.spectrumTheme` from a captured environment when needed.
+- [X] T020 [US1] Verify that `Spectrum.color.<token>` resolves correctly given a theme: write a tiny view, embed in a snapshot test, confirm light value renders in `.light` env and dark value in `.dark`. Re-run T015 to confirm green.
+- [X] T021 [US1] Run `swift test`. Expected: all five test targets plus the four new test files pass. Investigate and fix any snapshot regressions before continuing.
 
 **Checkpoint**: User Story 1 complete. The library is usable end-to-end for adaptive
 token rendering.
@@ -112,13 +112,13 @@ expected divergence.
 
 ### Tests for User Story 2
 
-- [ ] T022 [P] [US2] Create `Tests/SpectrumUIFoundationsTests/ThemeOverrideTests.swift`: (a) override a `SpectrumColor` token at root, assert descendant resolution returns the override; (b) assert non-overridden tokens still return Spectrum defaults; (c) sibling subtree isolation — same token outside the override scope returns the default.
+- [X] T022 [P] [US2] Create `Tests/SpectrumUIFoundationsTests/ThemeOverrideTests.swift`: (a) override a `SpectrumColor` token at root, assert descendant resolution returns the override; (b) assert non-overridden tokens still return Spectrum defaults; (c) sibling subtree isolation — same token outside the override scope returns the default.
 
 ### Implementation for User Story 2
 
-- [ ] T023 [US2] Implement `ThemeOverrides.setting(_:to:)` for all eight categories in `Sources/SpectrumUIFoundations/Theme/Theme.swift`. Each variant takes a `KeyPath<<Category>Tokens, <ValueType>>` and returns a new `ThemeOverrides` value.
-- [ ] T024 [US2] Update `SpectrumColor.resolve(in:)` (T005) to consult `EnvironmentValues.spectrumTheme.overrides` before falling back to its embedded `lightHex`/`darkHex`. Same plumbing for `SpectrumFont`, `SpectrumDuration`, `SpectrumElevation`, and the scalar tokens.
-- [ ] T025 [US2] Run `swift test`. Expected: T022's three sub-cases all green.
+- [X] T023 [US2] Implement `ThemeOverrides.setting(_:to:)` for all eight categories in `Sources/SpectrumUIFoundations/Theme/Theme.swift`. Each variant takes a `KeyPath<<Category>Tokens, <ValueType>>` and returns a new `ThemeOverrides` value.
+- [X] T024 [US2] Update `SpectrumColor.resolve(in:)` (T005) to consult `EnvironmentValues.spectrumTheme.overrides` before falling back to its embedded `lightHex`/`darkHex`. Same plumbing for `SpectrumFont`, `SpectrumDuration`, `SpectrumElevation`, and the scalar tokens.
+- [X] T025 [US2] Run `swift test`. Expected: T022's three sub-cases all green.
 
 **Checkpoint**: User Story 2 complete. Brand customization is supported with a
 single, bounded knob.

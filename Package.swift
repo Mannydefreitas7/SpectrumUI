@@ -16,11 +16,10 @@ let package = Package(
         .plugin(name: "GenerateTokens", targets: ["GenerateTokens"])
     ],
     dependencies: [
-        // Test-only: snapshot testing for token rendering.
-        .package(
-            url: "https://github.com/pointfreeco/swift-snapshot-testing.git",
-            from: "1.15.0"
-        )
+        // No external runtime dependencies. v0.2.0 tests use value-based assertions
+        // rather than image snapshots, so swift-snapshot-testing is intentionally not
+        // a dependency yet — it can be added in a follow-up PR alongside reviewable
+        // image baselines.
     ],
     targets: [
         // MARK: Foundations — bottom of the stack; zero internal dependencies.
@@ -30,10 +29,7 @@ let package = Package(
         ),
         .testTarget(
             name: "SpectrumUIFoundationsTests",
-            dependencies: [
-                "SpectrumUIFoundations",
-                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
-            ]
+            dependencies: ["SpectrumUIFoundations"]
         ),
 
         // MARK: Icons — depends only on Foundations.
