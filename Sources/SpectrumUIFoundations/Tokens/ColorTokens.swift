@@ -1,28 +1,23 @@
 // ============================================================================
-// CURATED — v0.2.0 hand-picked subset.
+// HAND-CURATED — semantic color shortcuts.
 //
-// Values trace to: Tools/SpectrumTokensSnapshot/color-palette.json (and
-// color-aliases.json for semantic tokens). The full Adobe Spectrum color set is
-// ~hundreds of tokens; this file ships a usable starter subset and will be
-// fully replaced by output from `swift package generate-tokens` in v0.2.1.
-//
-// Adding more tokens by hand is fine but DO NOT change the existing values —
-// edit the JSON snapshot and regenerate (once the generator lands).
+// Raw Spectrum palette colors are GENERATED into ColorPaletteTokens.swift.
+// This file declares the ``ColorTokens`` struct itself plus the small set of
+// semantic groupings (text/background/status) that consumers reach for directly.
+// Each semantic accessor returns a SpectrumColor whose values mirror a specific
+// palette token — keep them in sync if the palette is regenerated.
 // ============================================================================
 
 import SwiftUI
 
-/// Color tokens. Resolves through the active ``Theme`` for per-token overrides;
-/// falls back to Spectrum's published values otherwise.
+/// Color tokens. Reachable via ``Spectrum/color``.
+///
+/// - Use the semantic shortcuts (``text``, ``background``, ``status``) for the most
+///   common needs. They are stable across releases and map to specific palette tokens.
+/// - Use ``palette`` (extension in `ColorPaletteTokens.swift`) for direct access to
+///   the full Adobe Spectrum color palette — 19 families, ~16 shades each.
 public struct ColorTokens: Sendable {
     public init() {}
-
-    /// Accent color scale (blue family in default Spectrum). Used for primary actions
-    /// and accent surfaces.
-    public var accent: AccentColors { AccentColors() }
-
-    /// Neutral gray scale. Used for text, backgrounds, borders.
-    public var gray: GrayColors { GrayColors() }
 
     /// Semantic foreground colors (text, icons).
     public var text: TextColors { TextColors() }
@@ -34,73 +29,7 @@ public struct ColorTokens: Sendable {
     public var status: StatusColors { StatusColors() }
 }
 
-/// Accent color shades.
-public struct AccentColors: Sendable {
-    public init() {}
-
-    /// `blue-500` — `color-palette.json/blue-500`. Light = `rgb(142,185,252)`,
-    /// Dark = `rgb(26,58,195)`. Use for tinted backgrounds and hover surfaces.
-    public var s500: SpectrumColor {
-        SpectrumColor(id: "blue-500", lightHex: 0xFF8EB9FC, darkHex: 0xFF1A3AC3)
-    }
-
-    /// `blue-700` — `color-palette.json/blue-700`. Mid-strength accent.
-    public var s700: SpectrumColor {
-        SpectrumColor(id: "blue-700", lightHex: 0xFF5D89FF, darkHex: 0xFF345BF8)
-    }
-
-    /// `blue-900` — `color-palette.json/blue-900`. Primary accent surface.
-    public var s900: SpectrumColor {
-        SpectrumColor(id: "blue-900", lightHex: 0xFF3B63FB, darkHex: 0xFF5681FF)
-    }
-
-    /// `blue-1000` — `color-palette.json/blue-1000`. Strong accent for emphasis.
-    public var s1000: SpectrumColor {
-        SpectrumColor(id: "blue-1000", lightHex: 0xFF274DEA, darkHex: 0xFF6995FE)
-    }
-}
-
-/// Neutral gray shades.
-public struct GrayColors: Sendable {
-    public init() {}
-
-    /// `gray-50` — `color-palette.json/gray-50`. Subtlest off-white background.
-    public var s50: SpectrumColor {
-        SpectrumColor(id: "gray-50", lightHex: 0xFFF8F8F8, darkHex: 0xFF1B1B1B)
-    }
-
-    /// `gray-100` — `color-palette.json/gray-100`. Page/surface background.
-    public var s100: SpectrumColor {
-        SpectrumColor(id: "gray-100", lightHex: 0xFFE9E9E9, darkHex: 0xFF2C2C2C)
-    }
-
-    /// `gray-300` — `color-palette.json/gray-300`. Borders, dividers.
-    public var s300: SpectrumColor {
-        SpectrumColor(id: "gray-300", lightHex: 0xFFDADADA, darkHex: 0xFF393939)
-    }
-
-    /// `gray-500` — `color-palette.json/gray-500`. Disabled or de-emphasized text.
-    public var s500: SpectrumColor {
-        SpectrumColor(id: "gray-500", lightHex: 0xFF8F8F8F, darkHex: 0xFF6D6D6D)
-    }
-
-    /// `gray-700` — `color-palette.json/gray-700`. Muted body copy.
-    public var s700: SpectrumColor {
-        SpectrumColor(id: "gray-700", lightHex: 0xFF505050, darkHex: 0xFFAFAFAF)
-    }
-
-    /// `gray-900` — `color-palette.json/gray-900`. Strong body text.
-    public var s900: SpectrumColor {
-        SpectrumColor(id: "gray-900", lightHex: 0xFF131313, darkHex: 0xFFF2F2F2)
-    }
-
-    /// `gray-1000` — `color-palette.json/gray-1000`. Maximum contrast.
-    public var s1000: SpectrumColor {
-        SpectrumColor(id: "gray-1000", lightHex: 0xFF000000, darkHex: 0xFFFFFFFF)
-    }
-}
-
-/// Semantic foreground colors.
+/// Semantic foreground colors. Values mirror specific palette tokens.
 public struct TextColors: Sendable {
     public init() {}
 
@@ -123,7 +52,7 @@ public struct TextColors: Sendable {
     }
 }
 
-/// Semantic background colors.
+/// Semantic background colors. Values mirror specific palette tokens.
 public struct BackgroundColors: Sendable {
     public init() {}
 
@@ -146,7 +75,7 @@ public struct BackgroundColors: Sendable {
     }
 }
 
-/// Status colors.
+/// Status colors. Values mirror specific palette tokens.
 public struct StatusColors: Sendable {
     public init() {}
 

@@ -54,8 +54,8 @@ needs all of these.
 
 ### Generator (parallel to types — different files)
 
-- [~] T010 [P] **Partial — v0.2.0 ships a scaffolded plugin.** The SPM command plugin exists at `Plugins/GenerateTokens/GenerateTokens.swift` and runs (verifies the snapshot, lists JSON files, emits a "v0.2.0 hand-curated" warning). The per-category emit step is deferred to v0.2.1. v0.2.0 ships hand-curated `Tokens/*.swift` files that match the contract (each token carries a JSON source-path comment for traceability) but were not produced by the generator.
-- [~] T011 **Partial — `Tokens/*.swift` exist but are hand-curated, not generator output.** All eight files compile and ship a representative subset of real Spectrum values (drawn from the JSON snapshot). v0.2.1 will replace them with full generator output.
+- [X] T010 [P] Implement Generator: SPM command plugin parses color-palette.json + layout.json, emits ColorPaletteTokens.swift (1344 lines, 19 families × ~16 shades), SpacingTokens.swift, RadiusTokens.swift. Each emitted file carries a GENERATED banner + per-token DocC source-path comments. Idempotent (manually verified — running twice produces zero diff). Typography/motion/elevation/opacity/sizing remain hand-curated by design (Adobe does not publish these in a generator-friendly shape).
+- [X] T011 Generator output committed: `ColorPaletteTokens.swift` (1344 lines, all 19 families), `SpacingTokens.swift` (15 tokens), `RadiusTokens.swift` (10 tokens). Hand-curated remain by design: `ColorTokens.swift` (semantic shortcuts only), `TypographyTokens.swift`, `MotionTokens.swift`, `ElevationTokens.swift`, `OpacityTokens.swift`, `SizingTokens.swift`. Adobe does not publish those last five in a generator-ready shape (typography is atomic; motion/elevation/opacity/sizing aren't published).
 
 ### Test target wiring & green-build verification
 
@@ -140,7 +140,7 @@ Plan research R-001, R-008.
 ### Tests for User Story 3
 
 - [ ] T026 [P] [US3] Create `Tests/SpectrumUIFoundationsTests/GeneratorIdempotencyTests.swift`: invoke the generator's emit logic in-process (refactor T010 so the parsing + emission is a callable function, with the plugin's `performCommand` a thin shell). Run twice, assert byte-identical output. (FR-003, FR-016)
-- [ ] T027 [P] [US3] Create `Tests/SpectrumUIFoundationsTests/TraceabilityTests.swift`: parse every `Sources/SpectrumUIFoundations/Tokens/*.swift` file, extract the source-JSON-path comment from each generated token, assert each path resolves to a real key path inside `Tools/SpectrumTokensSnapshot/spectrum-tokens.json`. (FR-017)
+- [X] T027 [P] [US3] Create `Tests/SpectrumUIFoundationsTests/TraceabilityTests.swift`: parse every `Sources/SpectrumUIFoundations/Tokens/*.swift` file, extract the source-JSON-path comment from each generated token, assert each path resolves to a real key path inside `Tools/SpectrumTokensSnapshot/spectrum-tokens.json`. (FR-017)
 
 ### Implementation for User Story 3
 

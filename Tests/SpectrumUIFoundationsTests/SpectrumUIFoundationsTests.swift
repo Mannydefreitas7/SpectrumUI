@@ -22,13 +22,17 @@ final class SpectrumUIFoundationsTests: XCTestCase {
 
     func testSpacingScaleIsMonotonicallyIncreasing() {
         let s = Spectrum.spacing
-        let scale: [CGFloat] = [s.s50, s.s100, s.s200, s.s300, s.s400, s.s500, s.s600, s.s700]
+        // Generated from layout.json — exact scale steps published by Adobe Spectrum.
+        let scale: [CGFloat] = [s.s25, s.s50, s.s75, s.s85, s.s100, s.s200, s.s300,
+                                s.s350, s.s400, s.s500, s.s600, s.s700, s.s800,
+                                s.s900, s.s1000]
         XCTAssertEqual(scale, scale.sorted(), "Spacing scale must be non-decreasing")
-        XCTAssertGreaterThan(s.s50, 0)
-        XCTAssertGreaterThan(s.s700, s.s50)
+        XCTAssertGreaterThan(s.s25, 0)
+        XCTAssertGreaterThan(s.s1000, s.s25)
     }
 
     func testSizingScaleIsMonotonicallyIncreasing() {
+        // Sizing remains hand-curated (Adobe doesn't publish a generic size-* scale).
         let s = Spectrum.sizing
         let scale: [CGFloat] = [s.s50, s.s100, s.s200, s.s300, s.s400, s.s500, s.s600]
         XCTAssertEqual(scale, scale.sorted())
@@ -36,9 +40,12 @@ final class SpectrumUIFoundationsTests: XCTestCase {
 
     func testRadiusScaleIsMonotonicallyIncreasing() {
         let r = Spectrum.radius
-        let scale: [CGFloat] = [r.s50, r.s100, r.s200, r.s300, r.s400, r.s500]
+        // Generated from layout.json — actual Spectrum scale steps.
+        let scale: [CGFloat] = [r.s0, r.s75, r.s100, r.s200, r.s300, r.s400,
+                                r.s500, r.s600, r.s700, r.s800]
         XCTAssertEqual(scale, scale.sorted())
-        XCTAssertGreaterThan(r.full, r.s500, "full corner radius must be the largest")
+        XCTAssertEqual(r.s0, 0)
+        XCTAssertGreaterThan(r.s800, r.s100)
     }
 
     func testOpacityValuesInRange() {
@@ -52,7 +59,7 @@ final class SpectrumUIFoundationsTests: XCTestCase {
     // MARK: SpectrumColor identity & resolution
 
     func testSpectrumColorCarriesItsTokenIdentifier() {
-        let c = Spectrum.color.accent.s500
+        let c = Spectrum.color.palette.blue.s500
         XCTAssertEqual(c.id, "blue-500")
         XCTAssertNotEqual(c.lightHex, c.darkHex,
                           "Light and dark hex must differ for an adaptive token")
@@ -60,9 +67,19 @@ final class SpectrumUIFoundationsTests: XCTestCase {
 
     func testGray1000IsBlackInLightAndWhiteInDark() {
         // gray-1000 is the canonical max-contrast token: black on light, white on dark.
-        let c = Spectrum.color.gray.s1000
+        let c = Spectrum.color.palette.gray.s1000
         XCTAssertEqual(c.lightHex, 0xFF000000)
         XCTAssertEqual(c.darkHex,  0xFFFFFFFF)
+    }
+
+    func testPaletteCoversAllNineteenFamilies() {
+        // Sanity-check the generator's family enumeration — 19 families per
+        // research R-001 / inventory.
+        let p = Spectrum.color.palette
+        _ = p.blue; _ = p.brown; _ = p.celery; _ = p.chartreuse; _ = p.cinnamon
+        _ = p.cyan; _ = p.fuchsia; _ = p.gray; _ = p.green; _ = p.indigo
+        _ = p.magenta; _ = p.orange; _ = p.pink; _ = p.purple; _ = p.red
+        _ = p.seafoam; _ = p.silver; _ = p.turquoise; _ = p.yellow
     }
 
     // MARK: Theme
